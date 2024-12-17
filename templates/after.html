@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Extracted Skills</h1>
+    <p>{{ s }}</p>
+
+    <form action="{{ url_for('match_skills') }}" method="POST">
+        <input type="text" name="skills" id="skills" class="field" value="{{ s }}">
+        <button type="submit">Submit</button>
+    </form>
+    <!-- <div id="results"></div>
+
+    <script>
+        document.getElementById('skillsForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const skills = document.getElementById('skills').value;
+
+            fetch('/match_skills', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `skills=${encodeURIComponent(skills)}`,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = '<h3>Top Matching Professions:</h3>';
+                    data.forEach((profession, index) => {
+                        resultsDiv.innerHTML += `<p>${index + 1}. ${profession[0]} (Match Score: ${profession[1]})</p>`;
+                    });
+                });
+        });
+    </script> -->
+
+</body>
+
+</html>

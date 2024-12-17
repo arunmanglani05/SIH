@@ -1,0 +1,354 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Upload</title>
+</head>
+
+<body>
+    <h2>Upload PDF File</h2>
+    <form action="{{ url_for('test') }}" method="post" enctype="multipart/form-data">
+        <label for="pdf">Choose PDF:</label>
+        <input type="file" id="pdf" name="pdf" accept=".pdf, .docx">
+        <br><br>
+        <input type="submit" value="Upload">
+    </form>
+    <h1>Extracted Skills</h1>
+    <p>{{ s }}</p>
+
+    <form action="{{ url_for('match_skills') }}" method="POST">
+        <input type="text" name="skills" id="skills" class="field" value="{{ s }}">
+        <button type="submit">Submit</button>
+    </form>
+</body>
+
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interviewer Match - Company Portal</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+</head>
+<style>
+    /* Basic Reset */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        background-color: #30becd;
+        color: #333;
+        background-image: url("{{ url_for('static', filename='sih5.avif') }}");
+        /* Replace with a real URL */
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        /* background-size: cover; */
+        /* background-position: center; */
+    }
+
+    /* Header */
+    header {
+        background-color: rgba(232, 255, 254, 0.8);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: rgb(4, 15, 69);
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    nav a {
+        color: #333;
+        text-decoration: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        /* Smooth transition for the effect */
+        margin: 0 15px;
+        font-size: 16px;
+        border-radius: 5px;
+        /* Rounded corners */
+        text-align: center;
+        /* Center text */
+        animation: fadeIn 1.5s ease-in-out;
+    }
+
+    nav a:hover {
+        color: rgb(8, 144, 159);
+        transform: translateY(-10px);
+        /* Move the element up by 10px */
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Hero Section */
+    .hero {
+        background-color: rgba(169, 238, 241, 0.75);
+        color: rgb(4, 15, 69);
+        text-align: center;
+        padding: 100px 20px;
+
+        /* animation: slideDown 1s ease-out; */
+    }
+
+    .hero-content {
+        max-width: 600px;
+        margin: 0 auto;
+        animation: fadeInUp 1.5s ease-out;
+    }
+
+    .hero h1 {
+        font-size: 36px;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 1px #25bbb4;
+    }
+
+    .hero p {
+        font-size: 18px;
+        margin-bottom: 30px;
+    }
+
+    .cta-button {
+        background-color: #fff;
+        color: rgb(4, 15, 69);
+        /* padding: px; */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 520;
+        font-size: 20px;
+        transition: background-color 0.3s ease;
+    }
+
+    .cta-button:hover {
+        background-color: #e6e6e6;
+    }
+
+    /* Upload Section */
+    .upload-section {
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 50px 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        margin: 30px auto;
+        max-width: 800px;
+        animation: fadeIn 2s ease-in-out;
+    }
+
+    .upload-section h2 {
+        margin-bottom: 20px;
+        color: rgb(4, 15, 69);
+    }
+
+    .upload-label {
+        display: inline-block;
+        padding: 15px 30px;
+        background-color: rgb(4, 15, 69);
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-bottom: 10px;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .upload-label:hover {
+        background-color: rgb(4, 15, 69);
+    }
+
+    .upload-label i {
+        margin-right: 8px;
+    }
+
+    #candidate-resume {
+        display: none;
+    }
+
+    button {
+        padding: 15px 30px;
+        background-color: #15ba86;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #218838;
+    }
+
+    /* Results Section */
+    .results-section {
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 50px 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        margin: 30px auto;
+        max-width: 800px;
+        animation: fadeIn 2s ease-in-out;
+    }
+
+    .results-section h2 {
+        margin-bottom: 20px;
+        color: rgb(4, 15, 69);
+    }
+
+    .results-section p {
+        max-width: 100%;
+        word-wrap: break-word;
+        /* Wrap long text to the next line */
+        word-break: break-all;
+        /* Break long words if necessary */
+        margin-bottom: 20px;
+        /* Space below the paragraph */
+        line-height: 1.6;
+        /* Line height for readability */
+    }
+
+    #match-result {
+        font-size: 20px;
+        color: #28a745;
+        padding: 15px;
+        border: 2px dashed #28a745;
+        border-radius: 5px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideDown {
+        0% {
+            transform: translateY(-100%);
+        }
+
+        100% {
+            transform: translateY(0);
+        }
+    }
+</style>
+
+
+
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="logo">Interviewer Match</div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Features</a>
+            <a href="#">Pricing</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Match Candidates with the Best Interviewers</h1>
+            <p>Ensure that your candidates are paired with the most qualified interviewers to guarantee a perfect fit.
+            </p>
+            <button class="cta-button">Get Started</button>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <section class="upload-section">
+        <h2>Upload Candidate Resume</h2>
+        <!-- <form id="upload-form"> -->
+        <form action="{{ url_for('test') }}" method="post" enctype="multipart/form-data">
+            <!-- File upload section -->
+            <label for="pdf" class="upload-label">Upload Resume:
+                <input type="file" id="pdf" name="pdf" accept=".pdf,.docx">
+            </label>
+
+            <!-- New input text field for Position -->
+            <!-- <label for="position" class="upload-label">Position:
+                <input type="text" id="position" name="position">
+            </label> -->
+            <label for="position" class="upload-label">Position:
+                <select id="position" name="position">
+                    <option value="frontend">Frontend Development</option>
+                    <option value="fullstack">Fullstack Development</option>
+                    <option value="backend">Backend Development</option>
+                </select>
+            </label>
+
+            <!-- Submit button -->
+            <input type="submit" value="Upload" class="upload-label">
+        </form>
+
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section">
+        <h1>Extracted Skills</h1>
+        <p>{{ s1 }}</p>
+        <h1>Position Skills</h1>
+        <p>{{ s2 }}</p>
+
+        <form action="{{ url_for('match_skills') }}" method="POST">
+            <label for="skills">Matched Skills: </label>
+            <input type="text" name="skills" id="skills" class="field" value="{{ s }}">
+            <!-- <div>If any skills are missing, feel free to add them in the space provided above.</div> -->
+            <div style="margin-top: 10px;">
+                If any skills are missing, feel free to add them in the space provided above.
+            </div>
+            <button type="submit" style="margin-top: 10px;">Submit</button>
+        </form>
+        <!-- <h2>Best Matched Interviewer</h2>
+        <div id="match-result">
+        </div> -->
+    </section>
+    <!-- <script>
+        // Add event listener to the file input
+        document.getElementById('pdf').addEventListener('change', function () {
+            var fileName = this.files[0]?.name || 'Select Resume'; // Add fallback if no file selected
+            document.getElementById('file-label').textContent = fileName;
+        });
+    </script> -->
+
+
+</body>
+
+</html>

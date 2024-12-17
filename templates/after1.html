@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interviewer Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #30becd;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        /* Header */
+        header {
+            background-color: rgba(232, 255, 254, 0.8);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-left: 20px;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+            margin-right: 20px;
+        }
+
+        nav a {
+            color: #333;
+            text-decoration: none;
+            font-size: 1em;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #30becd;
+        }
+
+        /* Main Content */
+        .content {
+            background-color: rgba(232, 255, 254, 0.8);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .content h1 {
+            color: black;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        .content p {
+            background-color: #30becd;
+            color: #FFFFFF;
+            padding: 15px 20px;
+            border-radius: 10px;
+            line-height: 1.6;
+            font-size: 1.2em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            word-break: break-word;
+        }
+
+        /* Footer */
+        footer {
+            background-color: rgba(232, 255, 254, 0.8);
+            color: #333;
+            padding: 10px 0;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">Interviewer Match</div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Features</a>
+            <a href="#">Pricing</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <div class="content">
+        <h1>Results of the Match</h1>
+        <p>{{ s | safe }}</p>
+    </div>
+
+    <footer>
+        &copy; 2024 Match Results. All rights reserved.
+    </footer>
+</body>
+
+</html>
