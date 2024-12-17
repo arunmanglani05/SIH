@@ -8,8 +8,6 @@ import random
 from random import choice, sample
 import PyPDF2
 from docx import Document
-
-
   
   
 app = Flask(__name__)
@@ -18,9 +16,9 @@ app = Flask(__name__)
 app.secret_key = 'xyzsdfg'
   
 app.config['MYSQL_HOST'] = 'sql12.freesqldatabase.com'
-app.config['MYSQL_USER'] = 'sql12728974'
-app.config['MYSQL_PASSWORD'] = 'IKZK2HrPUY'
-app.config['MYSQL_DB'] = 'sql12728974'
+app.config['MYSQL_USER'] = 'sql12731230'
+app.config['MYSQL_PASSWORD'] = '4H2XAs6dag'
+app.config['MYSQL_DB'] = 'sql12731230'
   
 mysql = MySQL(app)
   
@@ -88,6 +86,25 @@ def test():
         return redirect(url_for('upload_page'))  # Redirect to an upload page
 
     file = request.files['pdf']
+    pos=request.form['position']
+    try:
+        conn = mysql.connect  # Assuming you have mysql configured
+        if conn:
+            cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+            query = "SELECT skills FROM openings WHERE position = %s"
+            cursor.execute(query, (pos,))
+            results = cursor.fetchone()
+            # results = cursor.fetchall()
+            cursor.close()
+            conn.commit()
+            if results and 'skills' in results:
+                sk = results['skills']
+            else:
+                sk = ""  # Handle the case where no matching position is found
+        else:
+            return "Connection not established"
+    except Exception as e:
+            return f"An error occurred: {str(e)}"
     
     if file.filename == '':
         # flash('No selected file')
@@ -145,13 +162,135 @@ def test():
             # Replace all characters that are not letters (a-z or A-Z) with a comma
             return re.sub(r'[^a-zA-Z+]', ',', input_string)
         skills=replace_non_letters_with_comma(skills)
-        return render_template('home.html', s=skills)
+        def find_common_skills(text1, text2):
+            # Split the texts by commas and convert to sets
+            skills1 = set(text1.split(','))
+            skills2 = set(text2.split(','))
+
+            # Find common skills
+            common_skills = skills1.intersection(skills2)
+
+            # Join the common skills into a string separated by commas
+            return ','.join(common_skills)
+        skills1=find_common_skills(skills,sk)
+        return render_template('home.html', s=skills1,s1=skills,s2=sk)
     
 @app.route('/match_skills', methods=['POST'])
+# def match_skills():
+#     def get_matching_professions(input_skills):
+#         input_skills_set = set(input_skills.lower().split(","))
+        
+#         try:
+#             conn = mysql.connect  # Assuming you have mysql configured
+#             if conn:
+#                 cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+#                 cursor.execute("SELECT professor, skills FROM prof")
+#                 results = cursor.fetchall()
+#                 cursor.close()
+#                 conn.commit()
+#             else:
+#                 return "Connection not established"
+
+#         except Exception as e:
+#             return f"An error occurred: {str(e)}"
+
+#         matches = []
+#         for row in results:
+#             profession = row['professor']
+#             skills = row['skills']
+#             profession_skills_set = set(skills.lower().split(","))
+#             match_score = len(input_skills_set.intersection(profession_skills_set))
+#             if match_score > 0:
+#                 matches.append((profession, match_score))
+
+#         matches.sort(key=lambda x: x[1], reverse=True)  # Sort by match score
+        
+#         # Convert the top 5 matches into a concatenated string
+#         top_matches = " ".join([f"{profession}({score})" for profession, score in matches[:5]])
+        
+#         return top_matches
+
+#     # def get_matching_professions(input_skills):
+#     #     input_skills_set = set(input_skills.lower().split(","))
+#     #     # conn = sqlite3.connect('database.db')  # Connect to your database
+#     #     # cursor = conn.cursor()
+
+#     #     # cursor.execute("SELECT profession_name, skills FROM prof")
+#     #     # results = cursor.fetchall()
+#     #     try:
+#     #         conn = mysql.connect
+#     #         if conn:
+#     #                 cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+#     #                 # cursor = mysql.connect.cursor(MySQLdb.cursors.DictCursor)
+#     #                 cursor.execute("SELECT profession_name, skills FROM prof")
+#     #                 results = cursor.fetchall()
+#     #                 conn.commit()
+#     #                 cursor.close()
+#     #                 # return render_template("success.html")
+#     #                 # message="success"
+#     #         else:
+#     #             return "connection not extablished"
+    
+#     #     except Exception as e:
+#     #         return f"An error occurred: {str(e)}"
+
+#     #     matches = []
+#     #     for profession, skills in results:
+#     #         profession_skills_set = set(skills.lower().split(","))
+#     #         match_score = len(input_skills_set.intersection(profession_skills_set))
+#     #         if match_score > 0:
+#     #             matches.append((profession, match_score))
+
+#     #     matches.sort(key=lambda x: x[1], reverse=True)  # Sort by match score
+#     #     return matches[:5]  # Return top 5
+
+#     input_skills = request.form['skills']
+#     top_matches = get_matching_professions(input_skills)
+#     return render_template('after1.html', s=top_matches)
+# def match_skills():
+#     def get_matching_professions(input_skills):
+#         input_skills_set = set(input_skills.lower().split(","))
+
+#         try:
+#             conn = mysql.connect  # Assuming you have mysql configured
+#             if conn:
+#                 cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+#                 cursor.execute("SELECT professor, skills FROM prof")
+#                 results = cursor.fetchall()
+#                 cursor.close()
+#                 conn.commit()
+#             else:
+#                 return "Connection not established"
+        
+#         except Exception as e:
+#             return f"An error occurred: {str(e)}"
+
+#         matches = []
+#         for row in results:
+#             profession = row['professor']
+#             skills = row['skills']
+#             profession_skills_set = set(skills.lower().split(","))
+#             matched_skills = input_skills_set.intersection(profession_skills_set)
+#             match_score = len(matched_skills)
+#             if match_score > 0:
+#                 matches.append((profession, match_score, matched_skills))
+
+#         # Sort matches by score in descending order
+#         matches.sort(key=lambda x: x[1], reverse=True)
+        
+#         # Format the top 5 matches
+#         top_matches = " ".join([f"{profession}({score}) - Matched skills: {', '.join(matched_skills)}" 
+#                                 for profession, score, matched_skills in matches[:5]])
+        
+#         return top_matches
+
+#     input_skills = request.form['skills']
+#     top_matches = get_matching_professions(input_skills)
+#     return render_template('after1.html', s=top_matches)
 def match_skills():
     def get_matching_professions(input_skills):
         input_skills_set = set(input_skills.lower().split(","))
-        
+
         try:
             conn = mysql.connect  # Assuming you have mysql configured
             if conn:
@@ -162,7 +301,7 @@ def match_skills():
                 conn.commit()
             else:
                 return "Connection not established"
-
+        
         except Exception as e:
             return f"An error occurred: {str(e)}"
 
@@ -171,54 +310,30 @@ def match_skills():
             profession = row['professor']
             skills = row['skills']
             profession_skills_set = set(skills.lower().split(","))
-            match_score = len(input_skills_set.intersection(profession_skills_set))
+            matched_skills = input_skills_set.intersection(profession_skills_set)
+            match_score = len(matched_skills)
             if match_score > 0:
-                matches.append((profession, match_score))
+                matches.append((profession, match_score, matched_skills))
 
-        matches.sort(key=lambda x: x[1], reverse=True)  # Sort by match score
+        # Sort matches by score in descending order
+        matches.sort(key=lambda x: x[1], reverse=True)
         
-        # Convert the top 5 matches into a concatenated string
-        top_matches = " ".join([f"{profession}({score})" for profession, score in matches[:5]])
+        # Format the top 5 matches
+        top_matches = "<br>".join([f"{profession} - Score: {score} - Matched skills: {', '.join(matched_skills)}" 
+                                   for profession, score, matched_skills in matches[:5]])
         
         return top_matches
-
-    # def get_matching_professions(input_skills):
-    #     input_skills_set = set(input_skills.lower().split(","))
-    #     # conn = sqlite3.connect('database.db')  # Connect to your database
-    #     # cursor = conn.cursor()
-
-    #     # cursor.execute("SELECT profession_name, skills FROM prof")
-    #     # results = cursor.fetchall()
-    #     try:
-    #         conn = mysql.connect
-    #         if conn:
-    #                 cursor = conn.cursor(MySQLdb.cursors.DictCursor)
-    #                 # cursor = mysql.connect.cursor(MySQLdb.cursors.DictCursor)
-    #                 cursor.execute("SELECT profession_name, skills FROM prof")
-    #                 results = cursor.fetchall()
-    #                 conn.commit()
-    #                 cursor.close()
-    #                 # return render_template("success.html")
-    #                 # message="success"
-    #         else:
-    #             return "connection not extablished"
-    
-    #     except Exception as e:
-    #         return f"An error occurred: {str(e)}"
-
-    #     matches = []
-    #     for profession, skills in results:
-    #         profession_skills_set = set(skills.lower().split(","))
-    #         match_score = len(input_skills_set.intersection(profession_skills_set))
-    #         if match_score > 0:
-    #             matches.append((profession, match_score))
-
-    #     matches.sort(key=lambda x: x[1], reverse=True)  # Sort by match score
-    #     return matches[:5]  # Return top 5
 
     input_skills = request.form['skills']
     top_matches = get_matching_professions(input_skills)
     return render_template('after1.html', s=top_matches)
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     app.run('0.0.0.0',port=8080,debug=True)
